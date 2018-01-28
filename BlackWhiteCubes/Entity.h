@@ -6,6 +6,7 @@ class Entity
 public:
 	Entity();
 	void SetLife(bool life); // задание жизни
+	sf::Vector2f GetPosition(); // возврат позиции на карте
 	virtual void Update(std::vector<sf::String>& map, const float& dt) = 0; // обновление состояния
 	virtual ~Entity();
 protected:
