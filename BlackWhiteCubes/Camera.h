@@ -1,13 +1,13 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
-#include "WhiteCube.h"
+#include "Cube.h"
 #include"Map.h"
 
 class Camera
 {
 public:
 	Camera(const int& width, const int& height); // в конструкторе задается ширина и высота камеры
-	void Update(WhiteCube& whiteCube, Map& map); // обновление позиции камеры
+	void Update(Cube& whiteCube, Map& map); // обновление позиции камеры
 	sf::View& GetView(); // возврат камеры
 	~Camera();
 private:

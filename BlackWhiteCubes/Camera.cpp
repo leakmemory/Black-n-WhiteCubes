@@ -7,7 +7,7 @@ Camera::Camera(const int& width, const int& height) : _view(sf::FloatRect(0, 0, 
 
 }
 
-void Camera::Update(WhiteCube& whiteCube, Map& map)
+void Camera::Update(Cube& whiteCube, Map& map)
 {
 	_position = whiteCube.GetPosition(); // позиция камеры равна позиции игрока
 
