@@ -26,11 +26,11 @@ Map::Map(const int level)
 			_map.push_back("0000111                      0");
 			_map.push_back("0                            0");
 			_map.push_back("0                        01120");
-			_map.push_back("0                            0");
-			_map.push_back("0             1              0");
+			_map.push_back("0                 333        0");
+			_map.push_back("0             1222           0");
 			_map.push_back("0             2              0");
 			_map.push_back("0             2              0");
-			_map.push_back("0             1              0");
+			_map.push_back("0           3 1 3            0");
 			_map.push_back("000000000000000000000000000000");
 			break;
 		default:
@@ -53,11 +53,29 @@ std::vector<sf::String>& Map::GetMap()
 	return _map;
 }
 
-void Map::Draw(sf::RenderWindow& window)
+bool Map::ContinueDraw(char tile, bool dark)
+{
+	if (dark) {
+		// если не находим данный тайл в списке тайлов, не предназначенных для
+		// темного квадрата, то отрисовку можно продолжать
+		if (NOT_FOR_DARK.find(tile) == NOT_FOR_DARK.end()) {
+			return true;
+		}
+		else return false;
+	}
+	else {
+		if (NOT_FOR_WHITE.find(tile) == NOT_FOR_WHITE.end()) {
+			return true;
+		}
+		else return false;
+	}
+}
+
+void Map::Draw(sf::RenderWindow& window, bool dark)
 {
 	for (int i = 0; i < _height; i++) {
 		for (int j = 0; j < _width; j++) {
-			if (_map[i][j] != ' ') {
+			if (ContinueDraw(_map[i][j], dark)) {
 				switch (_map[i][j])
 				{
 				case '0':
@@ -68,6 +86,9 @@ void Map::Draw(sf::RenderWindow& window)
 					break;
 				case '2':
 					_sprite.setTextureRect(sf::IntRect(2 * MIDDLE_TILE_SIZE, 0, MIDDLE_TILE_SIZE, MIDDLE_TILE_SIZE));
+					break;
+				case '3':
+					_sprite.setTextureRect(sf::IntRect(3 * MIDDLE_TILE_SIZE, 0, MIDDLE_TILE_SIZE, MIDDLE_TILE_SIZE));
 					break;
 				default:
 					break;

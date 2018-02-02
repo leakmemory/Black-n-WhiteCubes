@@ -8,7 +8,8 @@ public:
 	int GetHeight(); // возвращаем высоту карты в пикселях
 	int GetWidth(); // возвращаем ширину карты в пикселях
 	std::vector<sf::String>& GetMap(); // возвращаем карту
-	void Draw(sf::RenderWindow& window); // отрисовка
+	bool ContinueDraw(char tile, bool dark); // продолжать ли отрисовку
+	void Draw(sf::RenderWindow& window, bool dark); // отрисовка
 	~Map();
 private:
 	int _height, _width; // высота и ширина карты
