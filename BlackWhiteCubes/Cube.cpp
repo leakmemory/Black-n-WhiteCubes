@@ -56,6 +56,24 @@ void Cube::UpdatePosition(std::vector<sf::String>& map, const float& dt)
 	_body.setPosition(_position);
 }
 
+bool Cube::ContinueCollision(char tile)
+{
+	if (_dark) {
+		// если не находим данный тайл в списке тайлов, не предназначенных для
+		// темного квадрата, то проверку на столкновение можно продолжать
+		if (NOT_FOR_DARK.find(tile) == NOT_FOR_DARK.end()) {
+			return true;
+		}
+		else return false;
+	}
+	else {
+		if (NOT_FOR_WHITE.find(tile) == NOT_FOR_WHITE.end()) {
+			return true;
+		}
+		else return false;
+	}
+}
+
 void Cube::SwapCube()
 {
 	_dark = !_dark;
@@ -71,11 +89,11 @@ void Cube::CheckCollision(std::vector<sf::String>& map, char orientation)
 	// проверка на столкновение по X
 	if (orientation == 'x') {
 		for (int i = (_position.y - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE; i < (_position.y + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE; i++) {
-			if (map[i][(_position.x - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE] != ' ') {
+			if (ContinueCollision(map[i][(_position.x - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE])) {
 				_position.x = (static_cast<int>((_position.x - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE) + 1) * MIDDLE_TILE_SIZE + CUBE_SIZE / 2;
 				break;
 			}
-			else if (map[i][(_position.x + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE] != ' ') {
+			else if (ContinueCollision(map[i][(_position.x + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE])) {
 				_position.x = static_cast<int>((_position.x + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE) * MIDDLE_TILE_SIZE - CUBE_SIZE / 2;
 				break;
 			}
@@ -86,13 +104,13 @@ void Cube::CheckCollision(std::vector<sf::String>& map, char orientation)
 		// если квадрат в воздухе, то проверяем на столкновение сверху и снизу
 		if (_state != NORMAL) {
 			for (int i = (_position.x - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE; i < (_position.x + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE; i++) {
-				if (map[(_position.y - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE][i] != ' ') {
+				if (ContinueCollision(map[(_position.y - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE][i])) {
 					_position.y = (static_cast<int>((_position.y - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE) + 1) * MIDDLE_TILE_SIZE + CUBE_SIZE / 2;
 					_state = FALL;
 					_speedY *= -1;
 					break;
 				}
-				else if (map[(_position.y + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE][i] != ' ') {
+				else if (ContinueCollision(map[(_position.y + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE][i])) {
 					_position.y = static_cast<int>((_position.y + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE) * MIDDLE_TILE_SIZE - CUBE_SIZE / 2;
 					_state = NORMAL;
 					break;
@@ -103,13 +121,13 @@ void Cube::CheckCollision(std::vector<sf::String>& map, char orientation)
 		else {
 			for (int i = (_position.x - CUBE_SIZE / 2) / MIDDLE_TILE_SIZE; i < (_position.x + CUBE_SIZE / 2) / MIDDLE_TILE_SIZE; i++) {
 				//проверяем плитки под квадратом
-				if (map[(_position.y + CUBE_SIZE) / MIDDLE_TILE_SIZE][i] == ' ') {
+				if (!ContinueCollision(map[(_position.y + CUBE_SIZE) / MIDDLE_TILE_SIZE][i])) {
 					continue;
 				}
-				// если есть хоть одна плитка
+				// если есть хоть одна плитка, которая должна припятствовать квадрату
 				else return;
 			}
-			// если все плитки пустые
+			// если все плитки не должны взаимодействовать с квадратом
 			_state = FALL;
 			_speedY = 0;
 		}

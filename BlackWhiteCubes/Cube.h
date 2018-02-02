@@ -10,14 +10,15 @@ public:
 	sf::RectangleShape& GetBody(); // возврат квадрата
 	virtual void Update(std::vector<sf::String>& map, const float& dt); // обновление состояния квадрата
 	void SwapCube(); // светлый <--> темный
-	bool IsDark();
+	bool IsDark(); // куб темный?
 	virtual ~Cube();
-protected:
+private:
 	virtual void CheckCollision(std::vector<sf::String>& map, char orientation) override; // проверка на столкновения
 	virtual void MoveX(const float& dt) override; // перемещение квадрата по X
 	virtual void MoveY(const float& dt) override; // перемещение квадрата по Y
 	void UpdatePosition(std::vector<sf::String>& map, const float& dt); // обновление позиции квадрата
-protected:
+	bool ContinueCollision(char tile); // стоит ли продолжать проверку на столкновение с данным тайлом
+private:
 	sf::RectangleShape _body; // сам квадрат
 	enum State { NORMAL, JUMP, FALL }; // состояние (на земле, в прыжке, в падении)
 	State _state;
